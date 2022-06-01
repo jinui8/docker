@@ -1,0 +1,38 @@
+version: '3.3'
+
+services:
+  drupal:
+    image: drupal:latest
+    ports:
+      - 8099:80
+    volumes:
+      - drupal_modules:/var/www/html/modules
+      - drupal_profiles:/var/www/html/profiles
+      - drupal_themes:/var/www/html/themes
+      - drupal_sites:/var/www/html/sites
+    restart: always
+    depends_on:
+      - mariadb
+    links:
+      - mariadb
+
+  mariadb:
+    image: mariadb:latest
+    restart: on-failure
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: drupal
+        MYSQL_USER: drupal
+        MYSQL_PASSWORD: secret
+    ports:
+      - 3306:3306
+    volumes:
+       - db_data:/var/lib/mysql
+
+volumes:
+  drupal_modules:
+  drupal_profiles:
+  drupal_themes:
+  drupal_sites:
+  db_data:
+
